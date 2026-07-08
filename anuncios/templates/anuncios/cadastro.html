@@ -1,0 +1,15 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}Criar conta — Desapega{% endblock %}
+
+{% block conteudo %}
+    <div class="card" style="max-width:420px; margin:0 auto;">
+        <h1 style="margin-top:0;">Criar conta</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Cadastrar</button>
+        </form>
+        <p style="margin-top:14px;">Já tem conta? <a href="{% url 'login' %}">Entrar</a></p>
+    </div>
+{% endblock %}

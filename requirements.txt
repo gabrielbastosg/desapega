@@ -1,0 +1,7 @@
+Django>=5.2,<5.3
+
+# Fase 2 — fotos no S3
+django-storages
+boto3
+python-dotenv
+Pillow

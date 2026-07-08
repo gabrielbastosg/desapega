@@ -1,0 +1,131 @@
+/* ===== Desapega — estilos globais ===== */
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 0;
+    background: #f4f5f7;
+    color: #1f2937;
+}
+
+/* ----- Cabeçalho / navegação ----- */
+header { background: #4f46e5; color: #fff; padding: 12px 0; }
+header a { color: #fff; text-decoration: none; }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.logo { font-size: 22px; font-weight: 700; }
+nav a { margin-left: 16px; font-size: 14px; }
+nav a:hover { text-decoration: underline; }
+.ola { margin-left: 16px; font-size: 14px; opacity: .9; }
+.linkbtn {
+    background: none; border: none; color: #fff; cursor: pointer;
+    font-size: 14px; margin-left: 12px; padding: 0; text-decoration: underline;
+}
+
+/* ----- Layout ----- */
+.container { max-width: 960px; margin: 0 auto; padding: 24px; }
+.grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+/* ----- Cards ----- */
+.card {
+    background: #fff; border-radius: 10px; padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08); color: inherit;
+}
+a.card { display: block; text-decoration: none; transition: box-shadow .15s; }
+a.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+.card h3 { margin: 0 0 8px; font-size: 17px; }
+.preco { color: #059669; font-weight: 700; font-size: 18px; }
+.meta { color: #6b7280; font-size: 13px; margin-top: 6px; }
+
+/* ----- Badges de situação ----- */
+.badge {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; margin-top: 8px;
+}
+.badge-disponivel { background: #d1fae5; color: #065f46; }
+.badge-reservado  { background: #fef3c7; color: #92400e; }
+.badge-vendido    { background: #e5e7eb; color: #374151; }
+
+/* ----- Galeria de fotos (detalhe) ----- */
+.galeria {
+    display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0;
+}
+.galeria img {
+    width: 180px; height: 180px; object-fit: cover;
+    border-radius: 8px; border: 1px solid #e5e7eb;
+}
+
+/* ----- Utilitários ----- */
+.voltar { display: inline-block; margin-bottom: 16px; color: #4f46e5; text-decoration: none; }
+.vazio { color: #6b7280; text-align: center; padding: 48px 0; }
+
+/* ----- Botões ----- */
+.btn {
+    display: inline-block; background: #4f46e5; color: #fff; border: none;
+    padding: 9px 16px; border-radius: 8px; font-size: 14px; cursor: pointer;
+    text-decoration: none;
+}
+.btn:hover { background: #4338ca; }
+.btn-secondary { background: #e5e7eb; color: #1f2937; }
+.btn-secondary:hover { background: #d1d5db; }
+.btn-danger { background: #dc2626; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-sm { padding: 5px 10px; font-size: 13px; }
+
+/* ----- Formulários ----- */
+form p { margin: 0 0 14px; }
+form label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+form input, form textarea, form select {
+    width: 100%; padding: 9px 10px; border: 1px solid #d1d5db;
+    border-radius: 8px; font-size: 14px; font-family: inherit;
+}
+form textarea { min-height: 100px; resize: vertical; }
+.helptext { color: #6b7280; font-size: 12px; }
+ul.errorlist { color: #b91c1c; font-size: 13px; margin: 4px 0; padding-left: 18px; }
+
+/* ----- Barra de busca e filtros (home) ----- */
+.filtros {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    background: #fff; padding: 14px; border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 20px;
+}
+/* sobrescreve o width:100% do form global — aqui os campos ficam lado a lado */
+.filtros input, .filtros select { width: auto; flex: 1 1 140px; }
+.filtros input[type="number"] { flex: 0 0 100px; }
+.filtros .check-vendidos {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 6px;
+    font-size: 14px; color: #374151; cursor: pointer;
+}
+.filtros input[type="checkbox"] { flex: 0 0 auto; width: auto; margin: 0; }
+.filtros button {
+    background: #4f46e5; color: #fff; border: none;
+    padding: 9px 16px; border-radius: 8px; font-size: 14px; cursor: pointer;
+}
+.filtros button:hover { background: #4338ca; }
+.filtros .limpar { color: #6b7280; font-size: 14px; text-decoration: none; }
+.filtros .limpar:hover { text-decoration: underline; }
+
+/* ----- Paginação ----- */
+.paginacao {
+    display: flex; justify-content: center; align-items: center; gap: 16px;
+    margin-top: 28px;
+}
+.paginacao a { color: #4f46e5; text-decoration: none; font-size: 14px; font-weight: 600; }
+.paginacao a:hover { text-decoration: underline; }
+.paginacao .desativado { color: #cbd5e1; font-size: 14px; }
+.paginacao .pagina-atual { color: #6b7280; font-size: 14px; }
+
+/* ----- Ações do dono no detalhe (máquina de estados) ----- */
+.dono-acoes { margin-top: 20px; border-top: 1px solid #e5e7eb; padding-top: 16px; }
+.situacao-controle { margin-bottom: 16px; }
+.situacao-label { display: block; font-size: 13px; color: #6b7280; font-weight: 600; margin-bottom: 8px; }
+.situacao-botoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.situacao-botoes form { margin: 0; }
+.btn-reservar { background: #d97706; }
+.btn-reservar:hover { background: #b45309; }
+.btn-vender { background: #059669; }
+.btn-vender:hover { background: #047857; }
+.editar-apagar { display: flex; gap: 8px; }

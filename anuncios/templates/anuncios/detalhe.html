@@ -1,0 +1,75 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}{{ anuncio.titulo }} — Desapega{% endblock %}
+
+{% block conteudo %}
+    <a href="{% url 'anuncios:lista' %}" class="voltar">← Voltar para os anúncios</a>
+
+    <div class="card" style="max-width:640px;">
+        <h1 style="margin-top:0;">{{ anuncio.titulo }}</h1>
+
+        {% if anuncio.fotos.all %}
+            <div class="galeria">
+                {% for foto in anuncio.fotos.all %}
+                    <img src="{{ foto.imagem.url }}" alt="{{ anuncio.titulo }}">
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="preco" style="font-size:24px;">R$ {{ anuncio.preco }}</div>
+
+        <span class="badge badge-{{ anuncio.situacao }}">
+            {{ anuncio.get_situacao_display }}
+        </span>
+
+        <p style="margin-top:16px; white-space:pre-line;">{{ anuncio.descricao }}</p>
+
+        <div class="meta" style="margin-top:16px; line-height:1.8;">
+            <strong>Categoria:</strong> {{ anuncio.categoria.nome }}<br>
+            <strong>Condição:</strong> {{ anuncio.get_condicao_display }}<br>
+            <strong>Cidade:</strong> {{ anuncio.cidade }}<br>
+            <strong>Vendedor:</strong> {{ anuncio.vendedor.username }}<br>
+            <strong>Publicado em:</strong> {{ anuncio.criado_em|date:"d/m/Y H:i" }}
+        </div>
+
+        {% if user == anuncio.vendedor %}
+            <div class="dono-acoes">
+                {# --- Máquina de estados: só aparecem as transições que fazem sentido --- #}
+                <div class="situacao-controle">
+                    <span class="situacao-label">Mudar situação:</span>
+                    <div class="situacao-botoes">
+                        {% if anuncio.situacao == 'disponivel' %}
+                            <form method="post" action="{% url 'anuncios:mudar_situacao' anuncio.pk %}">
+                                {% csrf_token %}
+                                <button name="situacao" value="reservado" class="btn btn-sm btn-reservar">Marcar como reservado</button>
+                            </form>
+                            <form method="post" action="{% url 'anuncios:mudar_situacao' anuncio.pk %}">
+                                {% csrf_token %}
+                                <button name="situacao" value="vendido" class="btn btn-sm btn-vender">Marcar como vendido</button>
+                            </form>
+                        {% elif anuncio.situacao == 'reservado' %}
+                            <form method="post" action="{% url 'anuncios:mudar_situacao' anuncio.pk %}">
+                                {% csrf_token %}
+                                <button name="situacao" value="vendido" class="btn btn-sm btn-vender">Marcar como vendido</button>
+                            </form>
+                            <form method="post" action="{% url 'anuncios:mudar_situacao' anuncio.pk %}">
+                                {% csrf_token %}
+                                <button name="situacao" value="disponivel" class="btn btn-sm btn-secondary">Voltar para disponível</button>
+                            </form>
+                        {% elif anuncio.situacao == 'vendido' %}
+                            <form method="post" action="{% url 'anuncios:mudar_situacao' anuncio.pk %}">
+                                {% csrf_token %}
+                                <button name="situacao" value="disponivel" class="btn btn-sm btn-secondary">Reabrir anúncio</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="editar-apagar">
+                    <a href="{% url 'anuncios:editar' anuncio.pk %}" class="btn btn-secondary">Editar</a>
+                    <a href="{% url 'anuncios:apagar' anuncio.pk %}" class="btn btn-danger">Apagar</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

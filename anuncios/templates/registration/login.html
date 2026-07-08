@@ -1,0 +1,20 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}Entrar — Desapega{% endblock %}
+
+{% block conteudo %}
+    <div class="card" style="max-width:420px; margin:0 auto;">
+        <h1 style="margin-top:0;">Entrar</h1>
+
+        {% if form.errors %}
+            <p style="color:#b91c1c;">Usuário ou senha inválidos. Tente de novo.</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+        <p style="margin-top:14px;">Não tem conta? <a href="{% url 'anuncios:cadastro' %}">Cadastre-se</a></p>
+    </div>
+{% endblock %}

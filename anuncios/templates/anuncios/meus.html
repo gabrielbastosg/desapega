@@ -1,0 +1,31 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}Meus anúncios — Desapega{% endblock %}
+
+{% block conteudo %}
+    <h1>Meus anúncios</h1>
+    <a href="{% url 'anuncios:criar' %}" class="btn" style="margin-bottom:20px;">+ Novo anúncio</a>
+
+    {% if anuncios %}
+        <div class="grid">
+            {% for anuncio in anuncios %}
+                <div class="card">
+                    <a href="{% url 'anuncios:detalhe' anuncio.pk %}" style="text-decoration:none;color:inherit;">
+                        <h3>{{ anuncio.titulo }}</h3>
+                        <div class="preco">R$ {{ anuncio.preco }}</div>
+                        <div class="meta">{{ anuncio.categoria.nome }} · {{ anuncio.cidade }}</div>
+                        <span class="badge badge-{{ anuncio.situacao }}">
+                            {{ anuncio.get_situacao_display }}
+                        </span>
+                    </a>
+                    <div style="margin-top:12px;">
+                        <a href="{% url 'anuncios:editar' anuncio.pk %}" class="btn btn-secondary btn-sm">Editar</a>
+                        <a href="{% url 'anuncios:apagar' anuncio.pk %}" class="btn btn-danger btn-sm">Apagar</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="vazio">Você ainda não tem anúncios. Que tal criar o primeiro?</p>
+    {% endif %}
+{% endblock %}

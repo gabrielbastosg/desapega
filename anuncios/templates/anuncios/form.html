@@ -1,0 +1,20 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}{{ titulo_pagina }} — Desapega{% endblock %}
+
+{% block conteudo %}
+    <a href="{% url 'anuncios:lista' %}" class="voltar">← Voltar</a>
+
+    <div class="card" style="max-width:560px;">
+        <h1 style="margin-top:0;">{{ titulo_pagina }}</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p>
+                <label for="id_fotos">Fotos (pode escolher várias):</label>
+                <input type="file" name="fotos" id="id_fotos" multiple accept="image/*">
+            </p>
+            <button type="submit" class="btn">Salvar</button>
+        </form>
+    </div>
+{% endblock %}

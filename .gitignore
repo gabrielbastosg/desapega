@@ -1,0 +1,30 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# --- Django ---
+*.log
+# banco local de dev — nao versionar
+db.sqlite3
+# uploads locais (antes do S3)
+media/
+# coletados no deploy (collectstatic)
+staticfiles/
+
+# --- Segredos / AWS (NUNCA commitar) ---
+# SECRET_KEY, credenciais AWS, etc.
+.env
+*.pem
+.aws/
+
+# --- Ambiente virtual ---
+.venv/
+venv/
+env/
+
+# --- Editores / SO ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

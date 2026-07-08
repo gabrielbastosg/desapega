@@ -1,0 +1,78 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}Anúncios — Desapega{% endblock %}
+
+{% block conteudo %}
+    <h1>Anúncios</h1>
+
+    {# --- Formulário de busca e filtros (method GET: vai tudo na URL) --- #}
+    <form class="filtros" method="get" action="{% url 'anuncios:lista' %}">
+        <input type="search" name="q" value="{{ q }}"
+               placeholder="Buscar por título ou descrição...">
+
+        <select name="categoria">
+            <option value="">Todas as categorias</option>
+            {% for cat in categorias %}
+                <option value="{{ cat.slug }}"
+                    {% if cat.slug == categoria_sel %}selected{% endif %}>
+                    {{ cat.nome }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <input type="text" name="cidade" value="{{ cidade }}" placeholder="Cidade">
+
+        <input type="number" name="preco_min" value="{{ preco_min }}"
+               step="0.01" min="0" placeholder="R$ mín">
+        <input type="number" name="preco_max" value="{{ preco_max }}"
+               step="0.01" min="0" placeholder="R$ máx">
+
+        <label class="check-vendidos">
+            <input type="checkbox" name="vendidos" value="1"
+                   {% if ver_vendidos %}checked{% endif %}>
+            Mostrar vendidos
+        </label>
+
+        <button type="submit">Filtrar</button>
+        <a class="limpar" href="{% url 'anuncios:lista' %}">Limpar</a>
+    </form>
+
+    {# --- Resultados --- #}
+    <div class="grid">
+        {% for anuncio in anuncios %}
+            <a class="card" href="{% url 'anuncios:detalhe' anuncio.pk %}">
+                <h3>{{ anuncio.titulo }}</h3>
+                <div class="preco">R$ {{ anuncio.preco }}</div>
+                <div class="meta">
+                    {{ anuncio.categoria.nome }} · {{ anuncio.cidade }}
+                </div>
+                <span class="badge badge-{{ anuncio.situacao }}">
+                    {{ anuncio.get_situacao_display }}
+                </span>
+            </a>
+        {% empty %}
+            <p class="vazio">Nenhum anúncio encontrado com esses filtros.</p>
+        {% endfor %}
+    </div>
+
+    {# --- Paginação (só aparece se houver mais de uma página) --- #}
+    {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="paginacao">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">‹ Anterior</a>
+            {% else %}
+                <span class="desativado">‹ Anterior</span>
+            {% endif %}
+
+            <span class="pagina-atual">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Próxima ›</a>
+            {% else %}
+                <span class="desativado">Próxima ›</span>
+            {% endif %}
+        </nav>
+    {% endif %}
+{% endblock %}
