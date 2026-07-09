@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .models import Anuncio, Foto, Categoria
+from .models import Anuncio, Foto, Categoria, Conversa, Mensagem
 from .forms import AnuncioForm
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -135,3 +135,45 @@ def mudar_situacao(request, pk):
             anuncio.situacao = nova
             anuncio.save()
     return redirect('anuncios:detalhe', pk=anuncio.pk)
+
+@login_required
+def iniciar_conversa(request, pk):
+    anuncio = get_object_or_404(Anuncio, pk=pk)
+    # o dono não conversa consigo mesmo
+    if anuncio.vendedor == request.user:
+        return redirect('anuncios:detalhe', pk=anuncio.pk)
+    # cria a conversa se ainda não existe; senão, reusa a que já existe
+    conversa, criada = Conversa.objects.get_or_create(
+        anuncio=anuncio, comprador=request.user
+    )
+    return redirect('anuncios:conversa', pk=conversa.pk)
+
+
+@login_required
+def detalhe_conversa(request, pk):
+    conversa = get_object_or_404(Conversa, pk=pk)
+    # só o comprador e o vendedor do anúncio podem abrir esta conversa
+    if request.user != conversa.comprador and request.user != conversa.anuncio.vendedor:
+        return redirect('anuncios:lista')
+    if request.method == 'POST':
+        texto = request.POST.get('texto', '').strip()
+        if texto:                             # ignora mensagem vazia
+            Mensagem.objects.create(conversa=conversa, autor=request.user, texto=texto)
+        return redirect('anuncios:conversa', pk=conversa.pk)   # PRG: evita reenvio no F5
+    return render(request, 'anuncios/conversa.html', {'conversa': conversa})
+
+
+@login_required
+def minhas_conversas(request):
+    # conversas em que EU sou o comprador
+    como_comprador = Conversa.objects.filter(
+        comprador=request.user
+    ).select_related('anuncio', 'anuncio__vendedor')
+    # conversas em que EU sou o vendedor (nos meus anúncios)
+    como_vendedor = Conversa.objects.filter(
+        anuncio__vendedor=request.user
+    ).select_related('anuncio', 'comprador')
+    return render(request, 'anuncios/inbox.html', {
+        'como_comprador': como_comprador,
+        'como_vendedor': como_vendedor,
+    })

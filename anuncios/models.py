@@ -58,3 +58,32 @@ class Foto(models.Model):
 
     def __str__(self):
         return f'Foto de {self.anuncio.titulo}'   
+
+class Conversa(models.Model):
+    # Uma conversa é sobre UM anúncio, entre UM comprador e o vendedor do anúncio.
+    # O vendedor a gente pega por anuncio.vendedor — não precisa guardar de novo.
+    anuncio = models.ForeignKey(Anuncio, on_delete=models.CASCADE, related_name='conversas')
+    comprador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conversas_iniciadas')
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-criado_em']            # conversas mais recentes primeiro
+        # não deixa o mesmo comprador abrir 2 conversas no mesmo anúncio:
+        unique_together = ('anuncio', 'comprador')
+
+    def __str__(self):
+        return f'{self.comprador} sobre {self.anuncio}'
+
+
+class Mensagem(models.Model):
+    conversa = models.ForeignKey(Conversa, on_delete=models.CASCADE, related_name='mensagens')
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensagens_enviadas')
+    texto = models.TextField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+    lida = models.BooleanField(default=False)   # p/ marcar mensagens não lidas depois
+
+    class Meta:
+        ordering = ['criado_em']             # na conversa, mais antigas primeiro
+
+    def __str__(self):
+        return f'Msg de {self.autor} em {self.criado_em:%d/%m %H:%M}'

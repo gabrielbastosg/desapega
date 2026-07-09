@@ -1,0 +1,32 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}Conversa — {{ conversa.anuncio.titulo }}{% endblock %}
+
+{% block conteudo %}
+    <a href="{% url 'anuncios:minhas_conversas' %}" class="voltar">← Todas as conversas</a>
+
+    <div class="card chat-topo">
+        <div>
+            <span class="chat-sobre">Conversa sobre</span>
+            <a href="{% url 'anuncios:detalhe' conversa.anuncio.pk %}" class="chat-anuncio">{{ conversa.anuncio.titulo }}</a>
+        </div>
+        <span class="badge badge-{{ conversa.anuncio.situacao }}">{{ conversa.anuncio.get_situacao_display }}</span>
+    </div>
+
+    <div class="chat-thread">
+        {% for m in conversa.mensagens.all %}
+            <div class="msg {% if m.autor == user %}msg-minha{% else %}msg-outro{% endif %}">
+                <div class="msg-bolha">{{ m.texto }}</div>
+                <div class="msg-info">{{ m.autor.username }} · {{ m.criado_em|date:"d/m H:i" }}</div>
+            </div>
+        {% empty %}
+            <p class="vazio">Nenhuma mensagem ainda. Diga olá! 👋</p>
+        {% endfor %}
+    </div>
+
+    <form method="post" class="chat-form">
+        {% csrf_token %}
+        <textarea name="texto" placeholder="Escreva uma mensagem..." required></textarea>
+        <button type="submit" class="btn">Enviar</button>
+    </form>
+{% endblock %}

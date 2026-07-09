@@ -3,9 +3,41 @@
 > Atualize ao fim de cada sessão. É o primeiro lugar a ler quando voltar.
 
 ## Sessão atual
-- **Data:** 2026-07-08
-- **Fase atual:** FASES 0, 1, 2, 3 e 4 CONCLUÍDAS ✅ → próxima é a Fase 5 (chat
-  comprador↔vendedor).
+- **Data:** 2026-07-09
+- **Fase atual:** FASES 0, 1, 2, 3, 4 e 5 CONCLUÍDAS ✅ → próxima é a Fase 6
+  (favoritos + perfil público).
+
+## Fase 5 — chat comprador↔vendedor (2026-07-09) ✅ testada ponta-a-ponta
+- **Models** (`models.py`): `Conversa` (anuncio FK related_name='conversas',
+  comprador FK related_name='conversas_iniciadas', criado_em;
+  `unique_together=('anuncio','comprador')`, ordering `-criado_em`) e `Mensagem`
+  (conversa FK related_name='mensagens', autor FK related_name='mensagens_enviadas',
+  texto, criado_em, `lida` BooleanField default False; ordering `criado_em`).
+  Migration `0003_conversa_mensagem` aplicada.
+- **Views** (`views.py`): `iniciar_conversa(pk)` (pk=anúncio; bloqueia dono
+  consigo mesmo; `get_or_create`), `detalhe_conversa(pk)` (pk=conversa; guarda:
+  só comprador OU anuncio.vendedor; POST grava msg e faz PRG redirect),
+  `minhas_conversas` (inbox: `como_comprador` e `como_vendedor`). Import dos
+  models atualizado com `Conversa, Mensagem`.
+- **URLs**: `conversas/` (minhas_conversas), `anuncio/<pk>/conversar/`
+  (iniciar_conversa), `conversa/<pk>/` (conversa).
+- **Templates** (Claude criou): `conversa.html` (thread com bolhas minha/outro +
+  form textarea) e `inbox.html` (seções Comprando/Vendendo). Editados:
+  `detalhe.html` (botão "💬 Conversar com o vendedor" p/ não-dono logado; convite
+  a logar p/ anônimo) e `base.html` (link "Conversas" no menu).
+- **CSS**: bloco `.chat-topo/.chat-thread/.msg/.msg-bolha/.chat-form/.inbox-secao/
+  .conversa-item` no fim do `style.css`.
+- **Teste:** gabri (comprador) ↔ maria_teste (vendedor) trocaram mensagens no
+  anúncio "Bicicleta Caloi aro 29". OK.
+- **Dado de teste novo:** senha do `maria_teste` foi definida como `teste12345`
+  (via shell) pra permitir logar como o vendedor no teste.
+- **Adiado (polish opcional):** HTMX pra enviar sem recarregar; marcar mensagens
+  como `lida`/badge de não lidas; registrar `Conversa`/`Mensagem` no admin.
+- ✅ **Git no ar (2026-07-08):** repo público em
+  https://github.com/gabrielbastosg/desapega (branch `main`, 1º commit). O
+  `.gitignore` foi corrigido (comentários estavam na mesma linha do padrão e
+  deixavam `.env`/`db.sqlite3` fora do ignore) e criado `.env.example`. `.env`
+  confirmado fora do versionamento.
 - ⚠️ **Ambiente mudou:** o projeto agora roda no **venv** em
   `C:\Users\gabri\OneDrive\PC\Desktop\django-projetos\.venv` (não mais no Python
   global — o editor provavelmente criou/ativou sozinho). Pacotes do
@@ -118,4 +150,9 @@
 - Tema visual.
 
 ## Anotações / dúvidas
+- **CSS (2026-07-09):** `style.css` foi refatorado com `:root` (variáveis de cor,
+  espaçamento, raio, sombra) e mais respiro. Mesmas classes, mesmo tema índigo.
+- 💡 **Ideia p/ próxima:** separar o CSS em vários arquivos (ex.: base/anuncios/
+  chat) — o `:root` já deixa isso fácil (variáveis compartilhadas). Decidir entre
+  vários `<link>` no base.html ou um arquivo que faz `@import` dos parciais.
 - (anote aqui o que travou ou que queira perguntar na próxima sessão)
