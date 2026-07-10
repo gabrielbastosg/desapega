@@ -15,4 +15,7 @@ urlpatterns = [
     path('conversas/', views.minhas_conversas, name='minhas_conversas'),
     path('anuncio/<int:pk>/conversar/', views.iniciar_conversa, name='iniciar_conversa'),
     path('conversa/<int:pk>/', views.detalhe_conversa, name='conversa'),
+    path('anuncio/<int:pk>/favoritar/', views.favoritar, name='favoritar'),
+    path('favoritos/', views.meus_favoritos, name='meus_favoritos'),
+    path('u/<str:username>/', views.perfil_publico, name='perfil'),
 ]

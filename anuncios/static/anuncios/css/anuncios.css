@@ -1,0 +1,288 @@
+/* ==========================================================================
+   anuncios.css — tudo que é específico dos anúncios
+   Grid da home, cards, badges de situação, galeria de fotos (detalhe),
+   barra de filtros, paginação e o painel de ações do dono (máquina de estados).
+   Depende das variáveis definidas em base.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Grid da listagem
+   -------------------------------------------------------------------------- */
+.grid {
+    display: grid;
+    gap: var(--espaco-lg);
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+/* --------------------------------------------------------------------------
+   2. Cards
+   -------------------------------------------------------------------------- */
+.card {
+    background: var(--cor-superficie);
+    border-radius: var(--raio);
+    padding: var(--espaco-lg);
+    box-shadow: var(--sombra);
+    color: inherit;
+}
+
+/* card clicável (link) ganha hover com leve elevação */
+a.card {
+    display: block;
+    text-decoration: none;
+    transition: box-shadow .15s, transform .15s;
+}
+a.card:hover {
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-2px);
+}
+
+.card h3 {
+    margin: 0 0 var(--espaco-sm);
+    font-size: 17px;
+}
+
+.preco {
+    color: var(--cor-sucesso);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.meta {
+    color: var(--cor-texto-suave);
+    font-size: 13px;
+    margin-top: var(--espaco-sm);
+}
+
+/* --------------------------------------------------------------------------
+   3. Badges de situação (disponível / reservado / vendido)
+   -------------------------------------------------------------------------- */
+.badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: var(--raio-pill);
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: var(--espaco-sm);
+}
+.badge-disponivel { background: var(--badge-verde-bg); color: var(--badge-verde-tx); }
+.badge-reservado  { background: var(--badge-ambar-bg); color: var(--badge-ambar-tx); }
+.badge-vendido    { background: var(--badge-cinza-bg); color: var(--badge-cinza-tx); }
+
+/* --------------------------------------------------------------------------
+   4. Galeria de fotos (página de detalhe)
+   -------------------------------------------------------------------------- */
+.galeria {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espaco-sm);
+    margin: var(--espaco-lg) 0;
+}
+.galeria img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--raio-sm);
+    border: 1px solid var(--cor-borda);
+}
+
+/* --------------------------------------------------------------------------
+   5. Barra de busca e filtros (home)
+   -------------------------------------------------------------------------- */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--espaco-sm);
+    background: var(--cor-superficie);
+    padding: var(--espaco-md);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+    margin-bottom: var(--espaco-lg);
+}
+/* sobrescreve o width:100% do form global — aqui os campos ficam lado a lado */
+.filtros input,
+.filtros select {
+    width: auto;
+    flex: 1 1 140px;
+}
+.filtros input[type="number"] {
+    flex: 0 0 100px;
+}
+.filtros input[type="checkbox"] {
+    flex: 0 0 auto;
+    width: auto;
+    margin: 0;
+}
+.filtros .check-vendidos {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-xs);
+    font-size: 14px;
+    color: var(--badge-cinza-tx);
+    cursor: pointer;
+}
+.filtros button {
+    background: var(--cor-primaria);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    cursor: pointer;
+}
+.filtros button:hover {
+    background: var(--cor-primaria-hover);
+}
+.filtros .limpar {
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+    text-decoration: none;
+}
+.filtros .limpar:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   6. Paginação
+   -------------------------------------------------------------------------- */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--espaco-md);
+    margin-top: var(--espaco-xl);
+}
+.paginacao a {
+    color: var(--cor-primaria);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+.paginacao a:hover {
+    text-decoration: underline;
+}
+.paginacao .desativado {
+    color: #cbd5e1;
+    font-size: 14px;
+}
+.paginacao .pagina-atual {
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Ações do dono no detalhe (máquina de estados)
+   -------------------------------------------------------------------------- */
+.dono-acoes {
+    margin-top: var(--espaco-lg);
+    border-top: 1px solid var(--cor-borda);
+    padding-top: var(--espaco-lg);
+}
+.situacao-controle {
+    margin-bottom: var(--espaco-md);
+}
+.situacao-label {
+    display: block;
+    font-size: 13px;
+    color: var(--cor-texto-suave);
+    font-weight: 600;
+    margin-bottom: var(--espaco-sm);
+}
+.situacao-botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espaco-sm);
+}
+.situacao-botoes form {
+    margin: 0;
+}
+.btn-reservar {
+    background: var(--cor-alerta);
+}
+.btn-reservar:hover {
+    background: var(--cor-alerta-hover);
+}
+.btn-vender {
+    background: var(--cor-sucesso);
+}
+.btn-vender:hover {
+    background: var(--cor-sucesso-hover);
+}
+.editar-apagar {
+    display: flex;
+    gap: var(--espaco-sm);
+}
+
+/* --------------------------------------------------------------------------
+   8. Ações no detalhe (conversar / favoritar) e botão de favorito
+   -------------------------------------------------------------------------- */
+.acoes-anuncio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--espaco-sm);
+    margin-top: var(--espaco-lg);
+}
+.acoes-anuncio form {
+    margin: 0;
+}
+
+/* estado "não favoritado": botão claro com contorno */
+.btn-favorito {
+    display: inline-block;
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
+    border: 1px solid var(--cor-borda-input);
+    padding: 10px 18px;
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s;
+}
+.btn-favorito:hover {
+    background: var(--cor-cinza-claro);
+}
+
+/* estado "favoritado": destaque em vermelho suave */
+.btn-favorito.favoritado {
+    background: #fff1f2;
+    border-color: var(--cor-perigo);
+    color: var(--cor-perigo-hover);
+}
+.btn-favorito.favoritado:hover {
+    background: #ffe4e6;
+}
+
+/* --------------------------------------------------------------------------
+   9. Perfil público do vendedor
+   -------------------------------------------------------------------------- */
+.perfil-topo {
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-md);
+    margin-bottom: var(--espaco-lg);
+}
+/* "avatar" simples: círculo com a inicial do username (sem foto, por enquanto) */
+.perfil-avatar {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--raio-pill);
+    background: var(--cor-primaria);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+.perfil-nome {
+    margin: 0 0 var(--espaco-xs);
+}
+.perfil-secao {
+    font-size: 18px;
+    margin: var(--espaco-lg) 0 var(--espaco-md);
+    padding-bottom: var(--espaco-sm);
+    border-bottom: 1px solid var(--cor-borda);
+}

@@ -3,9 +3,51 @@
 > Atualize ao fim de cada sessão. É o primeiro lugar a ler quando voltar.
 
 ## Sessão atual
-- **Data:** 2026-07-09
-- **Fase atual:** FASES 0, 1, 2, 3, 4 e 5 CONCLUÍDAS ✅ → próxima é a Fase 6
-  (favoritos + perfil público).
+- **Data:** 2026-07-10
+- **Fase atual:** FASES 0 a 6 CONCLUÍDAS ✅ → próxima é a Fase 7 (deploy + polish).
+  Nesta sessão: refatoramos o CSS e fizemos a Fase 6 inteira (favoritos + perfil).
+
+## Fase 6 — favoritos + perfil público (2026-07-10) ✅ testada
+- **Model** (`models.py`): `Favorito` (usuario FK related_name='favoritos',
+  anuncio FK related_name='favoritado_por', criado_em;
+  `unique_together=('usuario','anuncio')`, ordering `-criado_em`).
+  Migration `0004_favorito` aplicada.
+- **Views** (`views.py`): `favoritar(pk)` (só POST, `@login_required`, toggle via
+  `get_or_create`+`delete`; volta pelo `next` do POST ou pro detalhe);
+  `meus_favoritos` (lista com select_related); `detalhe_anuncio` agora passa
+  `ja_favoritou`; `perfil_publico(username)` (sem login; `get_object_or_404(User)`;
+  anúncios não-vendidos do vendedor). Imports novos: `Favorito`, `User`.
+- **URLs**: `anuncio/<pk>/favoritar/`, `favoritos/`, `u/<username>/` (name='perfil').
+- **Templates** (Claude criou/editou): `favoritos.html` (grade de cards);
+  `perfil.html` (cabeçalho com avatar-inicial + data de cadastro + nº de anúncios,
+  e grade dos anúncios ativos). Editados: `detalhe.html` (botão ❤️ Favoritar/
+  Favoritado num form POST com hidden `next`; nome do vendedor virou link pro
+  perfil) e `base.html` (link "Favoritos" no menu).
+- **CSS** (`anuncios.css`): seções 8 (`.acoes-anuncio`, `.btn-favorito` +
+  `.favoritado`) e 9 (`.perfil-topo`, `.perfil-avatar`, `.perfil-nome`,
+  `.perfil-secao`).
+- **Testes automatizados** (test client): toggle favorita→True / clica de novo→
+  False; `/favoritos/` logado 200 e anônimo 302; `/u/<user>/` 200, inexistente
+  404; detalhe traz o link pro perfil. Todos OK.
+- **Falta teste visual no navegador** (usuário faz): logar, favoritar num anúncio
+  de OUTRO usuário (o dono não vê o botão, é de propósito), ver em "Favoritos",
+  desfavoritar, e abrir o perfil pelo nome do vendedor.
+
+## CSS — refatorado e separado (2026-07-10) ✅
+- O `style.css` único (230 linhas, tudo misturado) foi **dividido em 3 arquivos**
+  em `anuncios/static/anuncios/css/`:
+  - **`base.css`** — variáveis `:root`, reset, tipografia, cabeçalho/menu, layout
+    `.container`, botões (`.btn*`), formulários e utilitários (`.voltar`, `.vazio`).
+    Carrega **primeiro** (tem as variáveis que os outros usam).
+  - **`anuncios.css`** — grid, cards, `.preco/.meta`, badges de situação, galeria,
+    filtros, paginação e ações do dono (`.dono-acoes` etc.).
+  - **`chat.css`** — `.chat-*`, `.msg*`, inbox (`.inbox-secao`, `.conversa-item`).
+- `base.html`: um `<link>` virou **três** (base → anuncios → chat, nessa ordem).
+- Também deixamos mais legível: 1 propriedade por linha nas regras densas, sem
+  mudar nenhuma cor/valor — visual idêntico. `style.css` antigo apagado.
+- Testado: home + os 3 CSS respondem 200, sem erros no runserver.
+- Escolha: 3 `<link>` (mais simples/explícito que `@import`, cada arquivo cacheia
+  sozinho). Fecha a "💡 Ideia p/ próxima" que estava anotada nas Anotações.
 
 ## Fase 5 — chat comprador↔vendedor (2026-07-09) ✅ testada ponta-a-ponta
 - **Models** (`models.py`): `Conversa` (anuncio FK related_name='conversas',
@@ -152,7 +194,6 @@
 ## Anotações / dúvidas
 - **CSS (2026-07-09):** `style.css` foi refatorado com `:root` (variáveis de cor,
   espaçamento, raio, sombra) e mais respiro. Mesmas classes, mesmo tema índigo.
-- 💡 **Ideia p/ próxima:** separar o CSS em vários arquivos (ex.: base/anuncios/
-  chat) — o `:root` já deixa isso fácil (variáveis compartilhadas). Decidir entre
-  vários `<link>` no base.html ou um arquivo que faz `@import` dos parciais.
+- ✅ **Feito (2026-07-10):** CSS separado em base/anuncios/chat com 3 `<link>`.
+  Ver seção "CSS — refatorado e separado" no topo.
 - (anote aqui o que travou ou que queira perguntar na próxima sessão)

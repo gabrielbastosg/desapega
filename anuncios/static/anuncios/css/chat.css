@@ -1,0 +1,122 @@
+/* ==========================================================================
+   chat.css — conversas comprador ↔ vendedor
+   Cabeçalho da conversa, thread com bolhas de mensagem, formulário de envio
+   e a inbox ("Minhas conversas"). Depende das variáveis de base.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Topo da conversa
+   -------------------------------------------------------------------------- */
+.chat-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaco-md);
+    margin-bottom: var(--espaco-lg);
+}
+.chat-sobre {
+    display: block;
+    color: var(--cor-texto-suave);
+    font-size: 13px;
+}
+.chat-anuncio {
+    color: var(--cor-primaria);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 17px;
+}
+.chat-anuncio:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   2. Thread de mensagens (bolhas)
+   -------------------------------------------------------------------------- */
+.chat-thread {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-sm);
+    background: var(--cor-superficie);
+    border-radius: var(--raio);
+    padding: var(--espaco-lg);
+    box-shadow: var(--sombra);
+    max-height: 460px;
+    overflow-y: auto;
+    margin-bottom: var(--espaco-md);
+}
+
+.msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+}
+.msg-minha {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+.msg-outro {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.msg-bolha {
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: pre-line;
+    word-break: break-word;
+}
+.msg-minha .msg-bolha {
+    background: var(--cor-primaria);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+.msg-outro .msg-bolha {
+    background: var(--cor-cinza-claro);
+    color: var(--cor-texto);
+    border-bottom-left-radius: 4px;
+}
+.msg-info {
+    font-size: 11px;
+    color: var(--cor-texto-fraco);
+    margin-top: var(--espaco-xs);
+}
+
+/* --------------------------------------------------------------------------
+   3. Formulário de envio
+   -------------------------------------------------------------------------- */
+.chat-form {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--espaco-sm);
+}
+.chat-form textarea {
+    flex: 1;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid var(--cor-borda-input);
+    border-radius: var(--raio-sm);
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+}
+
+/* --------------------------------------------------------------------------
+   4. Inbox (lista de conversas)
+   -------------------------------------------------------------------------- */
+.inbox-secao {
+    font-size: 16px;
+    color: var(--badge-cinza-tx);
+    margin: var(--espaco-lg) 0 var(--espaco-md);
+}
+.conversa-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaco-md);
+    margin-bottom: var(--espaco-sm);
+}
+.conversa-item .meta {
+    margin-top: 2px;
+}

@@ -1,0 +1,240 @@
+/* ==========================================================================
+   base.css — a "casca" do Desapega
+   Variáveis de tema, reset, tipografia, cabeçalho/menu, layout, botões,
+   formulários e utilitários. É o PRIMEIRO CSS carregado no base.html porque
+   define as variáveis (:root) que os outros arquivos (anuncios.css, chat.css)
+   reutilizam com var(--nome).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Variáveis de tema (:root)
+   Definidas UMA vez e reusadas com var(--nome). Trocar a cor do site inteiro
+   agora é mudar 1 linha aqui embaixo.
+   -------------------------------------------------------------------------- */
+:root {
+    /* Cores da marca */
+    --cor-primaria:        #4f46e5;
+    --cor-primaria-hover:  #4338ca;
+    --cor-sucesso:         #059669;
+    --cor-sucesso-hover:   #047857;
+    --cor-alerta:          #d97706;
+    --cor-alerta-hover:    #b45309;
+    --cor-perigo:          #dc2626;
+    --cor-perigo-hover:    #b91c1c;
+
+    /* Neutros */
+    --cor-fundo:           #f4f5f7;
+    --cor-superficie:      #ffffff;
+    --cor-texto:           #1f2937;
+    --cor-texto-suave:     #6b7280;
+    --cor-texto-fraco:     #9ca3af;
+    --cor-borda:           #e5e7eb;
+    --cor-borda-input:     #d1d5db;
+    --cor-cinza-claro:     #eef0f4;
+
+    /* Badges de situação */
+    --badge-verde-bg:  #d1fae5;  --badge-verde-tx:  #065f46;
+    --badge-ambar-bg:  #fef3c7;  --badge-ambar-tx:  #92400e;
+    --badge-cinza-bg:  #e5e7eb;  --badge-cinza-tx:  #374151;
+
+    /* Espaçamento (escala consistente) */
+    --espaco-xs:  4px;
+    --espaco-sm:  8px;
+    --espaco-md:  16px;
+    --espaco-lg:  24px;
+    --espaco-xl:  40px;
+
+    /* Formas */
+    --raio:       12px;
+    --raio-sm:    8px;
+    --raio-pill:  999px;
+    --sombra:       0 1px 3px rgba(0, 0, 0, .08);
+    --sombra-hover: 0 6px 18px rgba(0, 0, 0, .12);
+
+    /* Tipografia / layout */
+    --fonte: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --largura-max: 960px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset e tipografia
+   -------------------------------------------------------------------------- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--fonte);
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    line-height: 1.55;          /* mais respiro no texto corrido */
+}
+
+h1, h2, h3 {
+    line-height: 1.25;
+}
+
+/* --------------------------------------------------------------------------
+   3. Cabeçalho / navegação
+   -------------------------------------------------------------------------- */
+header {
+    background: var(--cor-primaria);
+    color: #fff;
+    padding: var(--espaco-md) 0;
+}
+header a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaco-md);
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+nav a {
+    margin-left: var(--espaco-md);
+    font-size: 14px;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+
+.ola {
+    margin-left: var(--espaco-md);
+    font-size: 14px;
+    opacity: .9;
+}
+
+/* botão que parece um link (ex.: "Sair") */
+.linkbtn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: var(--espaco-sm);
+    padding: 0;
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout
+   -------------------------------------------------------------------------- */
+.container {
+    max-width: var(--largura-max);
+    margin: 0 auto;
+    padding: var(--espaco-xl) var(--espaco-lg);
+}
+
+/* --------------------------------------------------------------------------
+   5. Botões (.btn e variantes)
+   -------------------------------------------------------------------------- */
+.btn {
+    display: inline-block;
+    background: var(--cor-primaria);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s;
+}
+.btn:hover {
+    background: var(--cor-primaria-hover);
+}
+
+.btn-secondary {
+    background: var(--cor-borda);
+    color: var(--cor-texto);
+}
+.btn-secondary:hover {
+    background: var(--cor-borda-input);
+}
+
+.btn-danger {
+    background: var(--cor-perigo);
+}
+.btn-danger:hover {
+    background: var(--cor-perigo-hover);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Formulários
+   -------------------------------------------------------------------------- */
+form p {
+    margin: 0 0 var(--espaco-md);
+}
+form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--espaco-xs);
+}
+form input,
+form textarea,
+form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--cor-borda-input);
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    font-family: inherit;
+}
+form input:focus,
+form textarea:focus,
+form select:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .15);
+}
+form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.helptext {
+    color: var(--cor-texto-suave);
+    font-size: 12px;
+}
+ul.errorlist {
+    color: var(--cor-perigo-hover);
+    font-size: 13px;
+    margin: var(--espaco-xs) 0;
+    padding-left: 18px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Utilitários
+   -------------------------------------------------------------------------- */
+.voltar {
+    display: inline-block;
+    margin-bottom: var(--espaco-lg);
+    color: var(--cor-primaria);
+    text-decoration: none;
+}
+.voltar:hover {
+    text-decoration: underline;
+}
+
+.vazio {
+    color: var(--cor-texto-suave);
+    text-align: center;
+    padding: var(--espaco-xl) 0;
+}

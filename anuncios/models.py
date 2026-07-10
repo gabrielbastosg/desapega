@@ -87,3 +87,18 @@ class Mensagem(models.Model):
 
     def __str__(self):
         return f'Msg de {self.autor} em {self.criado_em:%d/%m %H:%M}'
+    
+
+class Favorito(models.Model):
+    # Quem favoritou (usuario) qual anúncio. Um registro = um "coração".
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favoritos') 
+    anuncio = models.ForeignKey(Anuncio, on_delete=models.CASCADE, related_name='favoritado_por')  
+    criado_em = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-criado_em']                 # favoritos mais recentes primeiro
+        # o mesmo usuário não favorita o mesmo anúncio duas vezes:
+        unique_together = ('usuario', 'anuncio')
+
+    def __str__(self):
+        return f'{self.usuario} ♥ {self.anuncio}'

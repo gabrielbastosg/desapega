@@ -1,0 +1,39 @@
+{% extends 'anuncios/base.html' %}
+
+{% block titulo %}{{ vendedor.username }} — Desapega{% endblock %}
+
+{% block conteudo %}
+    <a href="{% url 'anuncios:lista' %}" class="voltar">← Voltar para os anúncios</a>
+
+    {# --- Cabeçalho do perfil --- #}
+    <div class="perfil-topo">
+        <div class="perfil-avatar">{{ vendedor.username|first|upper }}</div>
+        <div>
+            <h1 class="perfil-nome">{{ vendedor.username }}</h1>
+            <div class="meta">
+                No Desapega desde {{ vendedor.date_joined|date:"F \d\e Y" }}
+                · {{ anuncios.count }} anúncio{{ anuncios.count|pluralize }} à venda
+            </div>
+        </div>
+    </div>
+
+    <h2 class="perfil-secao">Anúncios de {{ vendedor.username }}</h2>
+
+    {# --- Grade de anúncios ativos do vendedor --- #}
+    <div class="grid">
+        {% for anuncio in anuncios %}
+            <a class="card" href="{% url 'anuncios:detalhe' anuncio.pk %}">
+                <h3>{{ anuncio.titulo }}</h3>
+                <div class="preco">R$ {{ anuncio.preco }}</div>
+                <div class="meta">
+                    {{ anuncio.categoria.nome }} · {{ anuncio.cidade }}
+                </div>
+                <span class="badge badge-{{ anuncio.situacao }}">
+                    {{ anuncio.get_situacao_display }}
+                </span>
+            </a>
+        {% empty %}
+            <p class="vazio">{{ vendedor.username }} não tem anúncios à venda no momento.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

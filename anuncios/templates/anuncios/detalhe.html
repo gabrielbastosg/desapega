@@ -28,16 +28,24 @@
             <strong>Categoria:</strong> {{ anuncio.categoria.nome }}<br>
             <strong>Condição:</strong> {{ anuncio.get_condicao_display }}<br>
             <strong>Cidade:</strong> {{ anuncio.cidade }}<br>
-            <strong>Vendedor:</strong> {{ anuncio.vendedor.username }}<br>
+            <strong>Vendedor:</strong> <a href="{% url 'anuncios:perfil' anuncio.vendedor.username %}">{{ anuncio.vendedor.username }}</a><br>
             <strong>Publicado em:</strong> {{ anuncio.criado_em|date:"d/m/Y H:i" }}
         </div>
 
         {% if user.is_authenticated and user != anuncio.vendedor %}
-            <div style="margin-top:20px;">
+            <div class="acoes-anuncio">
                 <a href="{% url 'anuncios:iniciar_conversa' anuncio.pk %}" class="btn">💬 Conversar com o vendedor</a>
+                {# Botão favoritar: é um form POST (muda dados). 'next' faz voltar pra esta página. #}
+                <form method="post" action="{% url 'anuncios:favoritar' anuncio.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="btn-favorito{% if ja_favoritou %} favoritado{% endif %}">
+                        {% if ja_favoritou %}❤️ Favoritado{% else %}🤍 Favoritar{% endif %}
+                    </button>
+                </form>
             </div>
         {% elif not user.is_authenticated %}
-            <div style="margin-top:20px;">
+            <div class="acoes-anuncio">
                 <a href="{% url 'login' %}" class="btn btn-secondary">Entre para conversar com o vendedor</a>
             </div>
         {% endif %}

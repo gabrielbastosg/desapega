@@ -2,10 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .models import Anuncio, Foto, Categoria, Conversa, Mensagem
+from .models import Anuncio, Foto, Categoria, Conversa, Mensagem, Favorito
 from .forms import AnuncioForm
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.models import User
 # Create your views here.
 def lista_anuncios(request):
     anuncios = Anuncio.objects.select_related('categoria', 'vendedor').all()
@@ -57,7 +58,15 @@ def lista_anuncios(request):
 
 def detalhe_anuncio(request, pk):
     anuncio = get_object_or_404(Anuncio, pk=pk)
-    return render(request, 'anuncios/detalhe.html', {'anuncio': anuncio})
+    # o usuário logado já favoritou este anúncio? (anônimo nunca favoritou)
+    ja_favoritou = (
+        request.user.is_authenticated
+        and Favorito.objects.filter(usuario=request.user, anuncio=anuncio).exists()
+    )
+    return render(request, 'anuncios/detalhe.html', {
+        'anuncio': anuncio,
+        'ja_favoritou': ja_favoritou,
+    })
 
 
 @login_required
@@ -176,4 +185,39 @@ def minhas_conversas(request):
     return render(request, 'anuncios/inbox.html', {
         'como_comprador': como_comprador,
         'como_vendedor': como_vendedor,
+    })
+
+@login_required
+def favoritar(request, pk):
+    anuncio = get_object_or_404(Anuncio, pk=pk)
+    if request.method == 'POST':
+        # get_or_create devolve (objeto, criado?). Se já existia, o clique desfavorita.
+        favorito, criado = Favorito.objects.get_or_create(
+            usuario=request.user, anuncio=anuncio
+        )
+        if not criado:
+            favorito.delete()
+    # volta pra página de onde veio (o template manda em 'next'); senão, o detalhe
+    destino = request.POST.get('next')
+    if destino:
+        return redirect(destino)
+    return redirect('anuncios:detalhe', pk=anuncio.pk)
+
+
+@login_required
+def meus_favoritos(request):
+    favoritos = Favorito.objects.filter(usuario=request.user).select_related(
+        'anuncio', 'anuncio__categoria', 'anuncio__vendedor'
+    )
+    return render(request, 'anuncios/favoritos.html', {'favoritos': favoritos})
+
+
+def perfil_publico(request, username):
+    # busca o vendedor pelo username da URL (404 se não existir)
+    vendedor = get_object_or_404(User, username=username)
+    # mostra só os anúncios ativos dele (esconde os vendidos), mais recentes primeiro
+    anuncios = vendedor.anuncios.exclude(situacao='vendido').select_related('categoria')
+    return render(request, 'anuncios/perfil.html', {
+        'vendedor': vendedor,
+        'anuncios': anuncios,
     })
