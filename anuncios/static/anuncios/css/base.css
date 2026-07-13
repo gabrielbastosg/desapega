@@ -55,6 +55,37 @@
     --fonte: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --largura-max: 960px;
 }
+/* --------------------------------------------------------------------------
+   1b. Tema escuro — ativado pelo atributo data-theme="dark" no <html>.
+   Um script no base.html define o tema inicial (escolha salva ou a do
+   sistema) e o botão 🌙/☀️ alterna entre claro e escuro.
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    /* Neutros escuros */
+    --cor-fundo:        #0f141a;
+    --cor-superficie:   #1b2129;
+    --cor-texto:        #e5e7eb;
+    --cor-texto-suave:  #9ca3af;
+    --cor-texto-fraco:  #6b7280;
+    --cor-borda:        #313a45;
+    --cor-borda-input:  #414b57;
+    --cor-cinza-claro:  #262d36;
+
+    /* Badges: fundo escuro + texto claro */
+    --badge-verde-bg:  #064e3b;  --badge-verde-tx:  #6ee7b7;
+    --badge-ambar-bg:  #78350f;  --badge-ambar-tx:  #fcd34d;
+    --badge-cinza-bg:  #374151;  --badge-cinza-tx:  #d1d5db;
+
+    /* Sombras mais fortes pra aparecer no escuro */
+    --sombra:       0 1px 3px rgba(0, 0, 0, .5);
+    --sombra-hover: 0 6px 18px rgba(0, 0, 0, .6);
+}
 
 /* --------------------------------------------------------------------------
    2. Reset e tipografia
@@ -82,6 +113,10 @@ header {
     background: var(--cor-primaria);
     color: #fff;
     padding: var(--espaco-md) 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);   
 }
 header a {
     color: #fff;
@@ -125,6 +160,17 @@ nav a:hover {
     margin-left: var(--espaco-sm);
     padding: 0;
     text-decoration: underline;
+}
+
+/* botão de alternar tema (🌙 / ☀️) */
+.btn-tema {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    margin-left: var(--espaco-md);
+    padding: 4px;
 }
 
 /* --------------------------------------------------------------------------
@@ -234,7 +280,24 @@ ul.errorlist {
 }
 
 .vazio {
+    grid-column: 1 / -1;                 /* ocupa a largura toda dentro do .grid */
     color: var(--cor-texto-suave);
     text-align: center;
-    padding: var(--espaco-xl) 0;
+    padding: var(--espaco-xl) var(--espaco-lg);
+    background: var(--cor-superficie);
+    border: 1px dashed var(--cor-borda);
+    border-radius: var(--raio);
+}
+.vazio-icone {
+    font-size: 40px;
+    margin-bottom: var(--espaco-sm);
+}
+.vazio-titulo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cor-texto);
+    margin: 0 0 var(--espaco-xs);
+}
+.vazio .btn {
+    margin-top: var(--espaco-md);
 }

@@ -51,7 +51,16 @@
                 </span>
             </a>
         {% empty %}
-            <p class="vazio">Nenhum anúncio encontrado com esses filtros.</p>
+            <div class="vazio">
+                <div class="vazio-icone">🔍</div>
+                <p class="vazio-titulo">Nenhum anúncio encontrado</p>
+                <p>Tente ajustar os filtros — ou seja o primeiro a anunciar por aqui.</p>
+                {% if user.is_authenticated %}
+                    <a class="btn" href="{% url 'anuncios:criar' %}">+ Anunciar algo</a>
+                {% else %}
+                    <a class="btn" href="{% url 'anuncios:cadastro' %}">Criar conta e anunciar</a>
+                {% endif %}
+            </div>
         {% endfor %}
     </div>
 

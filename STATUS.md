@@ -3,9 +3,36 @@
 > Atualize ao fim de cada sessão. É o primeiro lugar a ler quando voltar.
 
 ## Sessão atual
-- **Data:** 2026-07-10
+- **Data:** 2026-07-13
 - **Fase atual:** FASES 0 a 6 CONCLUÍDAS ✅ → próxima é a Fase 7 (deploy + polish).
-  Nesta sessão: refatoramos o CSS e fizemos a Fase 6 inteira (favoritos + perfil).
+  Nesta sessão: **polish de UI** (modo escuro com botão, header fixo, estado vazio).
+
+## Polish de UI (2026-07-13) ✅ testado
+- **Modo escuro com botão 🌙/☀️** — primeiro JavaScript do projeto.
+  - `base.css`: o tema deixou de depender só do sistema. Agora usa
+    `:root[data-theme="dark"]` (e `[data-theme="light"]`), que sobrescrevem as
+    variáveis de cor. Cada bloco define também `color-scheme` (light/dark) pros
+    controles nativos. Removido o antigo `@media (prefers-color-scheme: dark)`
+    e o `color-scheme: light dark` do `:root`. Nova classe `.btn-tema`.
+  - `base.html`: (1) script inline no `<head>` define o tema inicial ANTES de
+    pintar (escolha salva no `localStorage` OU preferência do sistema na 1ª
+    visita) — evita "piscar" a cor errada; (2) botão `#btn-tema` no `<nav>`
+    (visível logado ou não); (3) script no fim do `<body>` alterna o tema,
+    grava no `localStorage` e troca o ícone (☀️ quando escuro, 🌙 quando claro).
+  - Testado: alterna na hora, lembra da escolha ao recarregar. OK pelo usuário.
+- **Header fixo** — `header` ganhou `position: sticky; top:0; z-index:100` +
+  sombra. (Usuário notou que com pouco conteúdo ele quase não aparece, mas é
+  inofensivo e passa a ajudar quando a home encher; ficou mantido.)
+- **Estado vazio da home** — `lista.html`: o `{% empty %}` virou uma caixa com
+  ícone 🔍, título e botão de anunciar (contextual: logado → criar; anônimo →
+  cadastro). `base.css`: `.vazio` agora é uma caixa pontilhada com
+  `grid-column: 1/-1` (ocupa a largura toda no grid) + classes `.vazio-icone` e
+  `.vazio-titulo`. Vale pra todos os "vazios" do site (consistência).
+- **Não commitado ainda** — mudanças só no disco; `git` local ainda sem commit
+  desse polish.
+
+## Sessão anterior (2026-07-10)
+- Refatoramos o CSS e fizemos a Fase 6 inteira (favoritos + perfil).
 
 ## Fase 6 — favoritos + perfil público (2026-07-10) ✅ testada
 - **Model** (`models.py`): `Favorito` (usuario FK related_name='favoritos',
