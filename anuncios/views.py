@@ -169,6 +169,7 @@ def detalhe_conversa(request, pk):
         if texto:                             # ignora mensagem vazia
             Mensagem.objects.create(conversa=conversa, autor=request.user, texto=texto)
         return redirect('anuncios:conversa', pk=conversa.pk)   # PRG: evita reenvio no F5
+    conversa.mensagens.filter(lida=False).exclude(autor=request.user).update(lida=True)
     return render(request, 'anuncios/conversa.html', {'conversa': conversa})
 
 

@@ -3,9 +3,28 @@
 > Atualize ao fim de cada sessão. É o primeiro lugar a ler quando voltar.
 
 ## Sessão atual
-- **Data:** 2026-07-13
+- **Data:** 2026-07-14
 - **Fase atual:** FASES 0 a 6 CONCLUÍDAS ✅ → próxima é a Fase 7 (deploy + polish).
-  Nesta sessão: **polish de UI** (modo escuro com botão, header fixo, estado vazio).
+  Nesta sessão: **badge de mensagens não lidas** (usa o campo `lida` que já existia).
+
+## Badge de mensagens não lidas (2026-07-14) ✅ testado no navegador
+- **Sem migração** — o campo `Mensagem.lida` (BooleanField default False) já existia.
+- **Marcar como lida** (`views.py`, `detalhe_conversa`): antes do `return render` final
+  (só roda no GET, pois o POST dá return antes), `conversa.mensagens.filter(lida=False)
+  .exclude(autor=request.user).update(lida=True)`. Ao abrir a thread, as msgs que o OUTRO
+  mandou viram lidas.
+- **Contador global** — NOVO arquivo `anuncios/context_processors.py` com
+  `mensagens_nao_lidas(request)`: se anônimo, `{}`; senão conta `Mensagem` com `lida=False`,
+  `.exclude(autor=request.user)`, em conversas onde sou comprador OU vendedor
+  (`Q(conversa__comprador=request.user) | Q(conversa__anuncio__vendedor=request.user)`).
+  Devolve `{'nao_lidas': total}`. Registrado no `settings.py` (TEMPLATES → context_processors).
+- **Template** (`base.html`): link "Conversas" ganhou
+  `{% if nao_lidas %}<span class="badge-nao-lidas">{{ nao_lidas }}</span>{% endif %}`
+  (a bolinha só aparece quando > 0).
+- **CSS** (`base.css`): `.badge-nao-lidas` — bolinha vermelha (#e11d48) arredondada.
+- Testado: `manage.py check` OK; shell mostra gabri e maria com 1 não lida cada (2 msgs no
+  banco). No navegador: bolinha aparece com o nº e SOME ao abrir a conversa. OK pelo usuário.
+- **Ainda "adiado" do chat:** HTMX (enviar sem reload); registrar Conversa/Mensagem no admin.
 
 ## Polish de UI (2026-07-13) ✅ testado
 - **Modo escuro com botão 🌙/☀️** — primeiro JavaScript do projeto.

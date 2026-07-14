@@ -301,3 +301,17 @@ ul.errorlist {
 .vazio .btn {
     margin-top: var(--espaco-md);
 }
+
+/* bolinha vermelha com o nº de mensagens não lidas, no menu */
+.badge-nao-lidas {
+    display: inline-block;
+    min-width: 1.2rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: #e11d48;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2rem;
+}

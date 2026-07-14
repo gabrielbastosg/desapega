@@ -28,7 +28,7 @@
                     <a href="{% url 'anuncios:criar' %}">+ Novo anúncio</a>
                     <a href="{% url 'anuncios:meus' %}">Meus anúncios</a>
                     <a href="{% url 'anuncios:meus_favoritos' %}">Favoritos</a>
-                    <a href="{% url 'anuncios:minhas_conversas' %}">Conversas</a>
+                    <a href="{% url 'anuncios:minhas_conversas' %}">Conversas{% if nao_lidas %} <span class="badge-nao-lidas">{{ nao_lidas }}</span>{% endif %}</a>
                     <span class="ola">Olá, {{ user.username }}</span>
                     <form action="{% url 'logout' %}" method="post" style="display:inline;">
                         {% csrf_token %}
