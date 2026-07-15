@@ -13,20 +13,32 @@
         <span class="badge badge-{{ conversa.anuncio.situacao }}">{{ conversa.anuncio.get_situacao_display }}</span>
     </div>
 
-    <div class="chat-thread">
-        {% for m in conversa.mensagens.all %}
-            <div class="msg {% if m.autor == user %}msg-minha{% else %}msg-outro{% endif %}">
-                <div class="msg-bolha">{{ m.texto }}</div>
-                <div class="msg-info">{{ m.autor.username }} · {{ m.criado_em|date:"d/m H:i" }}</div>
-            </div>
+    <div class="chat-thread" id="chat-thread">
+       {% for m in conversa.mensagens.all %}
+            {% include 'anuncios/_mensagem.html' %}
         {% empty %}
             <p class="vazio">Nenhuma mensagem ainda. Diga olá! 👋</p>
         {% endfor %}
     </div>
 
-    <form method="post" class="chat-form">
+    <form method="post" class="chat-form"
+          hx-post="{% url 'anuncios:conversa' conversa.pk %}"
+          hx-target="#chat-thread"
+          hx-swap="beforeend">
         {% csrf_token %}
         <textarea name="texto" placeholder="Escreva uma mensagem..." required></textarea>
         <button type="submit" class="btn">Enviar</button>
     </form>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.body.addEventListener('htmx:afterSwap', function (e) {
+        if (e.target.id === 'chat-thread') {
+            e.target.querySelectorAll('.vazio').forEach(el => el.remove());
+            const form = document.querySelector('.chat-form');
+            if (form) { form.reset(); form.querySelector('textarea').focus(); }
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
+</script>
 {% endblock %}

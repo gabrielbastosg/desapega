@@ -3,9 +3,32 @@
 > Atualize ao fim de cada sessão. É o primeiro lugar a ler quando voltar.
 
 ## Sessão atual
-- **Data:** 2026-07-14
-- **Fase atual:** FASES 0 a 6 CONCLUÍDAS ✅ → próxima é a Fase 7 (deploy + polish).
-  Nesta sessão: **badge de mensagens não lidas** (usa o campo `lida` que já existia).
+- **Data:** 2026-07-15
+- **Fase atual:** FASES 0 a 6 CONCLUÍDAS ✅. (Deploy/Fase 7: usuário decidiu NÃO fazer.)
+  Nesta sessão: **HTMX no chat** — enviar mensagem sem recarregar a página (1º HTMX do projeto).
+
+## HTMX no chat (2026-07-15) ✅ testado no navegador
+- **Objetivo:** enviar mensagem sem reload; melhoria progressiva (sem JS, cai no PRG antigo).
+- **`base.html`:** carrega `https://unpkg.com/htmx.org@2.0.4` no `<head>`; novo
+  `{% block scripts %}{% endblock %}` antes do `</body>` (pra páginas injetarem JS próprio).
+- **NOVO `_mensagem.html`** (partial): a bolha da mensagem (`.msg/.msg-bolha/.msg-info`),
+  extraída do `conversa.html` pra ter o HTML num lugar só (usado na lista E na resposta HTMX).
+- **`conversa.html`:** thread virou `<div class="chat-thread" id="chat-thread">` com
+  `{% include 'anuncios/_mensagem.html' %}` no loop; form ganhou
+  `hx-post="{% url 'anuncios:conversa' conversa.pk %}"`, `hx-target="#chat-thread"`,
+  `hx-swap="beforeend"` (o `{% csrf_token %}` continua dentro → HTMX envia junto). Novo
+  `{% block scripts %}` com listener `htmx:afterSwap`: remove o `.vazio`, dá `form.reset()`,
+  foca o textarea e rola pro fim.
+- **`views.py` (`detalhe_conversa`):** no POST, guarda a msg criada em `mensagem`; se
+  `request.headers.get('HX-Request')`, retorna `render(..., '_mensagem.html', {'m': mensagem})`
+  (só a bolha); senão, `redirect` (PRG) como antes. ⚠️ Cuidado que pegou: a linha que marca
+  msgs como lidas (`...filter(lida=False).exclude(autor=request.user).update(lida=True)`)
+  saiu sem querer ao trocar o bloco; foi restaurada (fica no caminho GET, antes do render).
+- Testado: `manage.py check` OK; no navegador as bolhas aparecem na hora, sem reload. OK.
+- **Ainda adiado do chat:** registrar Conversa/Mensagem no admin.
+
+## Sessão anterior (2026-07-14)
+- **Badge de mensagens não lidas** (usa o campo `lida` que já existia).
 
 ## Badge de mensagens não lidas (2026-07-14) ✅ testado no navegador
 - **Sem migração** — o campo `Mensagem.lida` (BooleanField default False) já existia.

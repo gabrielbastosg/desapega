@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'anuncios/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'anuncios/css/anuncios.css' %}">
     <link rel="stylesheet" href="{% static 'anuncios/css/chat.css' %}">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 </head>
 <body>
     <header>
@@ -60,5 +61,7 @@
             });
         })();
     </script>
+
+{% block scripts %}{% endblock %}
 </body>
 </html>

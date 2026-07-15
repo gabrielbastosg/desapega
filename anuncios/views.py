@@ -167,7 +167,10 @@ def detalhe_conversa(request, pk):
     if request.method == 'POST':
         texto = request.POST.get('texto', '').strip()
         if texto:                             # ignora mensagem vazia
-            Mensagem.objects.create(conversa=conversa, autor=request.user, texto=texto)
+            mensagem = Mensagem.objects.create(conversa=conversa, autor=request.user, texto=texto)
+            # veio do HTMX? devolve só a bolha nova (sem recarregar a página)
+            if request.headers.get('HX-Request'):
+                return render(request, 'anuncios/_mensagem.html', {'m': mensagem})
         return redirect('anuncios:conversa', pk=conversa.pk)   # PRG: evita reenvio no F5
     conversa.mensagens.filter(lida=False).exclude(autor=request.user).update(lida=True)
     return render(request, 'anuncios/conversa.html', {'conversa': conversa})

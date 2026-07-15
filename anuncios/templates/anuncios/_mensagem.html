@@ -1,0 +1,4 @@
+<div class="msg {% if m.autor == user %}msg-minha{% else %}msg-outro{% endif %}">
+    <div class="msg-bolha">{{ m.texto }}</div>
+    <div class="msg-info">{{ m.autor.username }} · {{ m.criado_em|date:"d/m H:i" }}</div>
+</div>
