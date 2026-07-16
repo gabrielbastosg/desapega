@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from .models import Anuncio, Foto, Categoria, Conversa, Mensagem, Favorito
-from .forms import AnuncioForm
+from .forms import AnuncioForm, FiltroForm
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -15,11 +15,14 @@ def lista_anuncios(request):
     if not ver_vendidos:
         anuncios = anuncios.exclude(situacao='vendido')
     # --- filtros (vêm da query string, ex.: ?q=violao&cidade=Recife) ---
-    q = request.GET.get('q', '').strip()
-    categoria = request.GET.get('categoria','').strip()
-    cidade = request.GET.get('cidade','').strip()
-    preco_min = request.GET.get('preco_min','').strip()
-    preco_max = request.GET.get('preco_max','').strip()
+    form = FiltroForm(request.GET)
+    form.is_valid()          # valida; os campos inválidos saem do cleaned_data
+    dados = form.cleaned_data
+    q = dados.get('q') or ''
+    categoria = dados.get('categoria') or ''
+    cidade = dados.get('cidade') or ''
+    preco_min = dados.get('preco_min')      # Decimal ou None
+    preco_max = dados.get('preco_max')
 
     if q:
         # Q(...) permite "OU": bate no título OU na descrição
@@ -50,8 +53,8 @@ def lista_anuncios(request):
         'q': q,
         'categoria_sel': categoria,
         'cidade': cidade,
-        'preco_min': preco_min,
-        'preco_max': preco_max,
+        'preco_min': preco_min if preco_min is not None else '',
+        'preco_max': preco_max if preco_max is not None else '',
         'ver_vendidos': ver_vendidos,
     }
     return render(request, 'anuncios/lista.html', contexto)        

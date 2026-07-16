@@ -3,9 +3,37 @@
 > Atualize ao fim de cada sessão. É o primeiro lugar a ler quando voltar.
 
 ## Sessão atual
-- **Data:** 2026-07-15
+- **Data:** 2026-07-16
 - **Fase atual:** FASES 0 a 6 CONCLUÍDAS ✅. (Deploy/Fase 7: usuário decidiu NÃO fazer.)
-  Nesta sessão: **HTMX no chat** — enviar mensagem sem recarregar a página (1º HTMX do projeto).
+  Nesta sessão: **filtros blindados + primeiros testes automatizados de verdade**.
+
+## Filtros blindados + tests.py (2026-07-16) ✅ 12 testes passando
+- **O bug (que existia desde a Fase 3):** `?preco_min=abc` na URL ia cru pro ORM
+  (`filter(preco__gte='abc')`) → `ValidationError` não tratada → **500 na home**.
+  Confirmado no shell antes de corrigir.
+- **`forms.py`:** novo `FiltroForm(forms.Form)` — `q`/`categoria`/`cidade` (CharField)
+  e `preco_min`/`preco_max` (DecimalField, `min_value=0`), todos `required=False`.
+  Bônus: `CharField` já faz `strip=True`, então os `.strip()` da view saíram de graça.
+- **`views.py` (`lista_anuncios`):** o bloco de `request.GET.get(...)` virou
+  `form = FiltroForm(request.GET)` + `form.is_valid()` + `dados = form.cleaned_data`.
+  💡 **Ideia-chave:** quando um form não valida, o Django tira do `cleaned_data`
+  **só os campos inválidos** e mantém os bons — então `?preco_min=abc&q=violao`
+  ainda busca "violao" e ignora o preço. Nada de erro, nada de perder os filtros.
+  No contexto, `preco_min`/`preco_max` viram `''` quando são `None` (senão o
+  template imprimiria a palavra "None" na caixinha).
+- **Template não mudou** — mantivemos as mesmas chaves no contexto de propósito.
+- **NOVO `tests.py`** (Claude escreveu, 12 testes, todos passando):
+  - `FiltrosTest` (7): home sem filtro; `preco_min=abc` não quebra; `abc` não
+    derruba o `q` junto; preço negativo ignorado; filtro de preço válido ainda
+    funciona; busca bate na descrição; vendidos escondidos por padrão.
+  - `GuardaDeDonoTest` (5): anônimo → login; intruso não apaga; intruso não muda
+    situação; dono muda; `situacao='hackeado'` recusada.
+  - Rodar com: `..\.venv\Scripts\python.exe manage.py test anuncios`
+- **Ainda no backlog:** registrar Conversa/Mensagem no admin; limpar dados de teste
+  (`maria_teste`, anúncios e imagens de teste no bucket).
+
+## Sessão anterior (2026-07-15)
+- **HTMX no chat** — enviar mensagem sem recarregar a página (1º HTMX do projeto).
 
 ## HTMX no chat (2026-07-15) ✅ testado no navegador
 - **Objetivo:** enviar mensagem sem reload; melhoria progressiva (sem JS, cai no PRG antigo).
