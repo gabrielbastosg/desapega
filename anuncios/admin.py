@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Categoria, Anuncio, Foto
+from .models import Categoria, Anuncio, Foto, Conversa, Mensagem, Favorito
 # Register your models here.
 
 @admin.register(Categoria)
@@ -22,3 +22,28 @@ class AnuncioAdmin(admin.ModelAdmin):
     # Caixa de busca (busca por título e cidade):
     search_fields = ['titulo', 'descricao', 'cidade']
     inlines = [FotoInline]  # mostra as fotos do anúncio na mesma página do admin
+
+
+class MensagemInline(admin.TabularInline):
+    model = Mensagem
+    extra = 0 # 0: não mostra campo em branco (aqui a gente só lê)
+
+
+@admin.register(Conversa)
+class ConversaAdmin(admin.ModelAdmin):
+    list_display = ['anuncio','comprador','criado_em']
+    list_filter = ['criado_em']
+    search_fields = ['anuncio__titulo','comprador__username']
+    inlines = [MensagemInline]   # as mensagens aparecem dentro da conversa
+
+
+@admin.register(Mensagem)
+class MensagemAdmin(admin.ModelAdmin):
+    list_display = ['autor','conversa','texto','lida','criado_em']
+    list_filter = ['lida','criado_em']
+    search_fields = ['texto','autor__username']
+
+@admin.register(Favorito)
+class FavoritoAdmin(admin.ModelAdmin):
+    list_display = ['usuario','anuncio','criado_em']
+    search_fields = ['usuario__username','anuncio__titulo']

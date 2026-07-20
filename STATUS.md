@@ -3,9 +3,35 @@
 > Atualize ao fim de cada sessão. É o primeiro lugar a ler quando voltar.
 
 ## Sessão atual
-- **Data:** 2026-07-16
+- **Data:** 2026-07-20
 - **Fase atual:** FASES 0 a 6 CONCLUÍDAS ✅. (Deploy/Fase 7: usuário decidiu NÃO fazer.)
-  Nesta sessão: **filtros blindados + primeiros testes automatizados de verdade**.
+  Nesta sessão: **admin de Conversa/Mensagem/Favorito** — último item de código
+  do backlog. Sessão curta, de férias, combinada com treino de digitação.
+
+## Admin de Conversa/Mensagem/Favorito (2026-07-20) ✅ 12 testes passando
+- **O que era:** `admin.py` só registrava `Categoria`, `Anuncio` e `Foto` (com
+  `FotoInline`). Conversa/Mensagem estavam no backlog desde a Fase 5, e o
+  `Favorito` (Fase 6) também nunca tinha sido registrado.
+- **`admin.py`:** import passou a trazer `Conversa, Mensagem, Favorito`. Novos:
+  - `MensagemInline` (`TabularInline`, `extra = 0` — aqui a gente só lê, não
+    precisa de campo em branco).
+  - `ConversaAdmin` — `list_display` anúncio/comprador/criado_em, filtro por
+    data, busca em `anuncio__titulo` e `comprador__username`, `inlines`
+    com o `MensagemInline` (a thread aparece dentro da conversa).
+  - `MensagemAdmin` — colunas autor/conversa/texto/lida/criado_em, filtro por
+    `lida`, busca no texto e no autor.
+  - `FavoritoAdmin` — usuário/anúncio/data, busca por username e título.
+- **Sem migration** — admin não mexe no schema.
+- ⚠️ **Armadilha achada (vale lembrar):** `search_fields = ['usuario', ...]`
+  apontando direto pra uma **ForeignKey** passa no `manage.py check` numa boa,
+  mas dá **500 na hora que alguém digita na caixa de busca**
+  (`FieldError: Unsupported lookup 'icontains' for ForeignKey`). O certo é
+  atravessar a relação: `'usuario__username'`. Ou seja: `check` limpo **não**
+  garante admin funcionando — testar com `?q=alguma-coisa` na URL da listagem.
+- **Como foi verificado:** GET autenticado nas 3 listagens novas, com e sem
+  `?q=`, → 6× 200. Suíte completa: 12 testes OK.
+- **Formato da sessão:** usuário digitou o código olhando só pro chat (treino de
+  digitação sem olhar o teclado, tema do SpeedCoder). Claude conferiu e testou.
 
 ## Filtros blindados + tests.py (2026-07-16) ✅ 12 testes passando
 - **O bug (que existia desde a Fase 3):** `?preco_min=abc` na URL ia cru pro ORM
