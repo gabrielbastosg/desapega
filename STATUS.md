@@ -294,19 +294,6 @@
   "sempre grátis". Reaproveitar conta/travas do projeto `site_aws`.
 - Plano completo escrito em `PLANO.md` (8 fases + modelo de dados + escopo MVP).
 
-## Próximo passo
-✅ CSS já foi extraído pro `anuncios/static/anuncios/style.css` (base.html limpo).
-
-➡️ **Fase 3 — Busca e filtros:** busca por texto (título/descrição), filtro por
-   categoria, cidade e faixa de preço, e paginação na home. Ver seção 5 do
-   PLANO.md.
-
-   Antes da Fase 3, se quiser, resolver as **pendências de higiene da Fase 2**
-   (rotacionar chave IAM + limpar dados de teste — ver acima).
-
-   Também pendente (quando quiser): `git init` + 1º commit (o `.gitignore`
-   já está pronto na raiz).
-
 ## Decisões em aberto (ver seção 7 do PLANO.md)
 - Nome do repositório (sugestão: `desapega`).
 - Hospedagem no deploy (Render/Railway/Fly — decidir na Fase 7).
