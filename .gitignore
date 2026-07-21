@@ -28,3 +28,5 @@ env/
 .idea/
 .DS_Store
 Thumbs.db
+# backups locais do banco
+db.sqlite3.*
