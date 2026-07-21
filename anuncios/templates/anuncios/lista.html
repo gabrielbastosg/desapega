@@ -40,15 +40,24 @@
     {# --- Resultados --- #}
     <div class="grid">
         {% for anuncio in anuncios %}
-            <a class="card" href="{% url 'anuncios:detalhe' anuncio.pk %}">
-                <h3>{{ anuncio.titulo }}</h3>
-                <div class="preco">R$ {{ anuncio.preco }}</div>
-                <div class="meta">
-                    {{ anuncio.categoria.nome }} · {{ anuncio.cidade }}
+            <a class="card card-anuncio" href="{% url 'anuncios:detalhe' anuncio.pk %}">
+                {% with foto=anuncio.fotos.first %}
+                    {% if foto %}
+                        <img class="card-foto" src="{{ foto.imagem.url }}" alt="{{ anuncio.titulo }}">
+                    {% else %}
+                        <div class="card-foto card-sem-foto">📷</div>
+                    {% endif %}
+                {% endwith %}
+                <div class="card-corpo">
+                    <h3>{{ anuncio.titulo }}</h3>
+                    <div class="preco">R$ {{ anuncio.preco }}</div>
+                    <div class="meta">
+                        {{ anuncio.categoria.nome }} · {{ anuncio.cidade }}
+                    </div>
+                    <span class="badge badge-{{ anuncio.situacao }}">
+                        {{ anuncio.get_situacao_display }}
+                    </span>
                 </div>
-                <span class="badge badge-{{ anuncio.situacao }}">
-                    {{ anuncio.get_situacao_display }}
-                </span>
             </a>
         {% empty %}
             <div class="vazio">

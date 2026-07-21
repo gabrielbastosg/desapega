@@ -8,15 +8,24 @@
     <div class="grid">
         {% for fav in favoritos %}
             {# cada 'fav' é um Favorito; o anúncio em si está em fav.anuncio #}
-            <a class="card" href="{% url 'anuncios:detalhe' fav.anuncio.pk %}">
-                <h3>{{ fav.anuncio.titulo }}</h3>
-                <div class="preco">R$ {{ fav.anuncio.preco }}</div>
-                <div class="meta">
-                    {{ fav.anuncio.categoria.nome }} · {{ fav.anuncio.cidade }}
+            <a class="card card-anuncio" href="{% url 'anuncios:detalhe' fav.anuncio.pk %}">
+                {% with foto=fav.anuncio.fotos.first %}
+                    {% if foto %}
+                        <img class="card-foto" src="{{ foto.imagem.url }}" alt="{{ fav.anuncio.titulo }}">
+                    {% else %}
+                        <div class="card-foto card-sem-foto">📷</div>
+                    {% endif %}
+                {% endwith %}
+                <div class="card-corpo">
+                    <h3>{{ fav.anuncio.titulo }}</h3>
+                    <div class="preco">R$ {{ fav.anuncio.preco }}</div>
+                    <div class="meta">
+                        {{ fav.anuncio.categoria.nome }} · {{ fav.anuncio.cidade }}
+                    </div>
+                    <span class="badge badge-{{ fav.anuncio.situacao }}">
+                        {{ fav.anuncio.get_situacao_display }}
+                    </span>
                 </div>
-                <span class="badge badge-{{ fav.anuncio.situacao }}">
-                    {{ fav.anuncio.get_situacao_display }}
-                </span>
             </a>
         {% empty %}
             <p class="vazio">

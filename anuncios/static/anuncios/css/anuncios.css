@@ -53,6 +53,33 @@ a.card:hover {
     margin-top: var(--espaco-sm);
 }
 
+/* card de anuncio com foto: a imagem encosta nas bordas, o texto tem padding */
+.card-anuncio {
+    padding: 0;
+    overflow: hidden;
+}
+
+.card-anuncio .card-corpo {
+    padding: var(--espaco-lg);
+}
+
+.card-foto {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;      /* corta sem distorcer, seja qual for o tamanho original */
+    background: var(--cor-fundo);
+}
+
+/* placeholder para anuncio sem nenhuma foto */
+.card-sem-foto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    opacity: .3;
+}
+
 /* --------------------------------------------------------------------------
    3. Badges de situação (disponível / reservado / vendido)
    -------------------------------------------------------------------------- */

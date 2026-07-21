@@ -9,7 +9,9 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 # Create your views here.
 def lista_anuncios(request):
-    anuncios = Anuncio.objects.select_related('categoria', 'vendedor').all()
+    # prefetch_related('fotos'): sem isso, cada card da listagem faria uma
+    # query extra pra buscar a miniatura (N+1).
+    anuncios = Anuncio.objects.select_related('categoria', 'vendedor').prefetch_related('fotos').all()
     # --- esconder vendidos por padrão (?vendidos=1 mostra eles) ---
     ver_vendidos = request.GET.get('vendidos') == '1'
     if not ver_vendidos:
@@ -215,7 +217,7 @@ def favoritar(request, pk):
 def meus_favoritos(request):
     favoritos = Favorito.objects.filter(usuario=request.user).select_related(
         'anuncio', 'anuncio__categoria', 'anuncio__vendedor'
-    )
+    ).prefetch_related('anuncio__fotos')
     return render(request, 'anuncios/favoritos.html', {'favoritos': favoritos})
 
 
@@ -223,7 +225,7 @@ def perfil_publico(request, username):
     # busca o vendedor pelo username da URL (404 se não existir)
     vendedor = get_object_or_404(User, username=username)
     # mostra só os anúncios ativos dele (esconde os vendidos), mais recentes primeiro
-    anuncios = vendedor.anuncios.exclude(situacao='vendido').select_related('categoria')
+    anuncios = vendedor.anuncios.exclude(situacao='vendido').select_related('categoria').prefetch_related('fotos')
     return render(request, 'anuncios/perfil.html', {
         'vendedor': vendedor,
         'anuncios': anuncios,
